@@ -20,11 +20,11 @@ const Hero = () => {
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-24 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-brand-purple-dark mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-brand-purple-dark mb-6 leading-tight font-serif">
             The Easiest Way to Approve Custom Orders
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-700 mb-10 max-w-2xl">
+          <p className="text-xl md:text-2xl text-gray-700 mb-10 max-w-2xl font-serif">
             Upload. Approve. Produce.
           </p>
 
