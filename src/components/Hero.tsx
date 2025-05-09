@@ -24,11 +24,11 @@ const Hero = () => {
             The Easiest Way to Approve Custom Orders
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-700 mb-6 max-w-2xl font-serif leading-snug">
+          <p className="text-xl md:text-2xl text-gray-700 mb-6 max-w-2xl font-serif leading-tight">
             Upload. Approve. Produce.
           </p>
 
-          <p className="text-lg text-gray-600 mb-8 max-w-3xl leading-relaxed">
+          <p className="text-lg text-gray-600 mb-8 max-w-3xl leading-tight">
             Simpler Proofs gives you a sleek, branded proofing experience your customers will love—and actually respond to. Built for Shopify and Etsy sellers who care about every detail.
           </p>
           
