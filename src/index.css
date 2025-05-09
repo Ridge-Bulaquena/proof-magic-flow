@@ -155,11 +155,11 @@
 
   .button-secondary::after {
     content: '';
-    @apply absolute top-[-50%] left-[-100%] w-1/2 h-[200%] bg-gradient-to-r from-transparent via-white/20 to-transparent rotate-[25deg] transition-all duration-800;
+    @apply absolute top-[-50%] left-[-100%] w-1/2 h-[200%] bg-gradient-to-r from-transparent via-white/20 to-transparent rotate-[25deg] transition-all duration-700;
   }
 
   .button-secondary:hover::after {
-    @apply left-[150%] transition-all duration-800;
+    @apply left-[150%] transition-all duration-700;
   }
 
   .card-feature {
