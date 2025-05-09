@@ -24,11 +24,11 @@ const Hero = () => {
             The Easiest Way to Approve Custom Orders
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-700 mb-10 max-w-2xl font-serif">
+          <p className="text-xl md:text-2xl text-gray-700 mb-6 max-w-2xl font-serif leading-snug">
             Upload. Approve. Produce.
           </p>
 
-          <p className="text-lg text-gray-600 mb-10 max-w-3xl">
+          <p className="text-lg text-gray-600 mb-8 max-w-3xl leading-relaxed">
             Simpler Proofs gives you a sleek, branded proofing experience your customers will love—and actually respond to. Built for Shopify and Etsy sellers who care about every detail.
           </p>
           
@@ -45,11 +45,11 @@ const Hero = () => {
               onClick={handleBookDemoClick}
               className={`button-secondary ${animateBookDemo ? 'animate-elastic' : ''}`}
             >
-              Book a Demo <ArrowRight size={18} className="ml-2 inline" />
+              Book a Demo <ArrowRight size={16} className="ml-1 inline" />
             </button>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 mt-10 mb-8 max-w-xl">
+          <div className="flex flex-wrap justify-center gap-6 mt-8 mb-8 max-w-xl">
             <div className="flex items-center">
               <Check size={20} className="text-brand-teal mr-2" />
               <span className="text-gray-700">No credit card required</span>
