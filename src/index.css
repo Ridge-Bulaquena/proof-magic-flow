@@ -155,7 +155,7 @@
   }
 
   .button-secondary {
-    @apply relative inline-flex items-center justify-center py-4 px-8 w-auto max-w-[350px] h-[50px] border-none rounded-full bg-brand-teal text-white font-bold text-xl text-center cursor-pointer overflow-hidden transition-transform shadow-md hover:scale-105 active:scale-95 font-sans;
+    @apply relative inline-flex items-center justify-center py-4 px-8 w-auto max-w-[350px] h-[50px] border-none rounded-full bg-brand-teal text-white font-bold text-base text-center cursor-pointer overflow-hidden transition-transform shadow-md hover:scale-105 active:scale-95 font-sans;
   }
 
   .button-secondary::after {
