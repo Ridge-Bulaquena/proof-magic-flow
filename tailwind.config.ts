@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,6 +53,18 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				brand: {
+					purple: {
+						light: '#6e82c2',
+						DEFAULT: '#374e96',
+						dark: '#1e2d5a',
+					},
+					teal: {
+						light: '#5ce5c9',
+						DEFAULT: '#2ed1b4',
+						dark: '#1eaf95',
+					},
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,12 +97,32 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+				'elastic': {
+					'0%': { transform: 'scale(1)' },
+					'30%': { transform: 'scale(1.05)' },
+					'60%': { transform: 'scale(0.98)' },
+					'100%': { transform: 'scale(1)' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-10px)' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'elastic': 'elastic 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+				'float': 'float 6s ease-in-out infinite',
+			},
+			fontFamily: {
+				sans: ['Inter', 'system-ui', 'sans-serif'],
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+				'brand-gradient': 'linear-gradient(90deg, #1e2d5a 0%, #374e96 50%, #6e82c2 100%)',
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

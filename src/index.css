@@ -1,10 +1,13 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 220 33% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -32,22 +35,15 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -79,14 +75,6 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -95,7 +83,94 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer components {
+  .button {
+    position: relative;
+    display: inline-block;
+    padding: 18px 40px;
+    width: 80%;
+    max-width: 700px;
+    height: 60px;
+    border: none;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #1e2d5a 0%, #374e96 50%, #6e82c2 100%);
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(30, 45, 90, 0.2);
+  }
+
+  .button:hover {
+    transform: scale(1.03);
+  }
+
+  .button:active {
+    transform: scale(0.98);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -100%;
+    width: 50%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(25deg);
+    transition: all 0.8s;
+  }
+
+  .button:hover::after {
+    left: 150%;
+    transition: all 0.8s;
+  }
+
+  .button.animate {
+    animation: elastic 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .button-secondary {
+    @apply relative inline-block py-4 px-8 w-auto max-w-[350px] h-[50px] border-none rounded-full bg-brand-teal text-white font-bold text-xl text-center cursor-pointer overflow-hidden transition-transform shadow-md hover:scale-105 active:scale-95;
+  }
+
+  .button-secondary::after {
+    content: '';
+    @apply absolute top-[-50%] left-[-100%] w-1/2 h-[200%] bg-gradient-to-r from-transparent via-white/20 to-transparent rotate-[25deg] transition-all duration-800;
+  }
+
+  .button-secondary:hover::after {
+    @apply left-[150%] transition-all duration-800;
+  }
+
+  .card-feature {
+    @apply p-6 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100;
+  }
+
+  .feature-icon {
+    @apply mb-4 p-3 rounded-full bg-brand-purple/10 inline-flex items-center justify-center text-brand-purple;
+  }
+  
+  .section-container {
+    @apply container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24;
   }
 }
