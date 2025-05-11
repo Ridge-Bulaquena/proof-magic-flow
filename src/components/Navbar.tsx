@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,8 +55,9 @@ const Navbar = () => {
               variant="outline" 
               size="sm" 
               className="font-medium border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-white"
+              asChild
             >
-              Log In
+              <Link to="/dashboard">Log In</Link>
             </Button>
             <Button 
               size="sm" 
@@ -117,8 +119,9 @@ const Navbar = () => {
               <Button 
                 variant="outline" 
                 className="w-full justify-center font-medium border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-white"
+                asChild
               >
-                Log In
+                <Link to="/dashboard">Log In</Link>
               </Button>
               <Button 
                 className="w-full justify-center font-medium bg-brand-purple hover:bg-brand-purple-dark text-white"
