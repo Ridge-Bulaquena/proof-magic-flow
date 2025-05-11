@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,6 +38,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { DateRange } from "react-day-picker";
 
 // Mock data for orders
 const mockOrders = Array(30).fill(null).map((_, i) => ({
@@ -57,7 +57,8 @@ const OrdersPage = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [artistFilter, setArtistFilter] = useState("all");
   const [productFilter, setProductFilter] = useState("all");
-  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+  // Fixed: Changed the type to DateRange which has optional 'to' property
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });
@@ -86,8 +87,8 @@ const OrdersPage = () => {
     // Date range filter
     const orderDate = new Date(order.date);
     const dateMatch = 
-      (!dateRange.from || orderDate >= dateRange.from) && 
-      (!dateRange.to || orderDate <= dateRange.to);
+      (!dateRange?.from || orderDate >= dateRange.from) && 
+      (!dateRange?.to || orderDate <= dateRange.to);
     
     return searchMatch && statusMatch && artistMatch && productMatch && dateMatch;
   });
@@ -144,7 +145,7 @@ const OrdersPage = () => {
             <PopoverTrigger asChild>
               <Button variant="outline" className="justify-start">
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateRange.from ? (
+                {dateRange?.from ? (
                   dateRange.to ? (
                     <>
                       {format(dateRange.from, "LLL dd, y")} - {format(dateRange.to, "LLL dd, y")}
@@ -161,10 +162,11 @@ const OrdersPage = () => {
               <Calendar
                 initialFocus
                 mode="range"
-                defaultMonth={dateRange.from}
+                defaultMonth={dateRange?.from}
                 selected={dateRange}
                 onSelect={setDateRange}
                 numberOfMonths={2}
+                className="pointer-events-auto"
               />
             </PopoverContent>
           </Popover>
