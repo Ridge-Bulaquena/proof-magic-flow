@@ -2,10 +2,17 @@
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, FileText, Settings, CalendarIcon, BarChart, Upload, LogOut } from "lucide-react";
 
 const DashboardLayout = () => {
+  const location = useLocation();
+  
+  // Helper function to check if a link is active
+  const isActive = (path: string) => {
+    return location.pathname === path || location.pathname.startsWith(`${path}/`);
+  };
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
@@ -22,43 +29,63 @@ const DashboardLayout = () => {
               <SidebarGroupLabel>Main</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Dashboard">
-                    <a href="/dashboard">
+                  <SidebarMenuButton 
+                    asChild 
+                    tooltip="Dashboard"
+                    className={isActive("/dashboard") && !isActive("/dashboard/orders") && !isActive("/dashboard/run-sheet") && !isActive("/dashboard/proof-history") && !isActive("/dashboard/upload") && !isActive("/dashboard/settings") ? "bg-brand-purple/10 text-brand-purple" : ""}
+                  >
+                    <Link to="/dashboard">
                       <LayoutDashboard className="h-4 w-4" />
                       <span>Dashboard</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Orders">
-                    <a href="/dashboard/orders">
+                  <SidebarMenuButton 
+                    asChild 
+                    tooltip="Orders"
+                    className={isActive("/dashboard/orders") ? "bg-brand-purple/10 text-brand-purple" : ""}
+                  >
+                    <Link to="/dashboard/orders">
                       <FileText className="h-4 w-4" />
                       <span>Orders</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Run Sheet">
-                    <a href="/dashboard/run-sheet">
+                  <SidebarMenuButton 
+                    asChild 
+                    tooltip="Run Sheet"
+                    className={isActive("/dashboard/run-sheet") ? "bg-brand-purple/10 text-brand-purple" : ""}
+                  >
+                    <Link to="/dashboard/run-sheet">
                       <BarChart className="h-4 w-4" />
                       <span>Run Sheet</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Proof History">
-                    <a href="/dashboard/proof-history">
+                  <SidebarMenuButton 
+                    asChild 
+                    tooltip="Proof History"
+                    className={isActive("/dashboard/proof-history") ? "bg-brand-purple/10 text-brand-purple" : ""}
+                  >
+                    <Link to="/dashboard/proof-history">
                       <CalendarIcon className="h-4 w-4" />
                       <span>Proof History</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Upload">
-                    <a href="/dashboard/upload">
+                  <SidebarMenuButton 
+                    asChild 
+                    tooltip="Upload"
+                    className={isActive("/dashboard/upload") ? "bg-brand-purple/10 text-brand-purple" : ""}
+                  >
+                    <Link to="/dashboard/upload">
                       <Upload className="h-4 w-4" />
                       <span>Upload Proof</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -67,11 +94,15 @@ const DashboardLayout = () => {
               <SidebarGroupLabel>Account</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Settings">
-                    <a href="/dashboard/settings">
+                  <SidebarMenuButton 
+                    asChild 
+                    tooltip="Settings"
+                    className={isActive("/dashboard/settings") ? "bg-brand-purple/10 text-brand-purple" : ""}
+                  >
+                    <Link to="/dashboard/settings">
                       <Settings className="h-4 w-4" />
                       <span>Settings</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
