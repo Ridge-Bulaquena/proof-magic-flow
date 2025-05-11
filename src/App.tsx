@@ -1,48 +1,24 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Dashboard from './pages/Dashboard/Dashboard';
+import OrderView from './pages/Dashboard/OrderView';
+import RunSheet from './pages/Dashboard/RunSheet';
+import Settings from './pages/Dashboard/Settings';
+import ProofView from './pages/ProofView';
+import NotFound from './pages/NotFound';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import DashboardLayout from "./layouts/DashboardLayout";
-import DashboardPage from "./pages/Dashboard/DashboardPage";
-import OrdersPage from "./pages/Dashboard/OrdersPage";
-import SettingsPage from "./pages/Dashboard/SettingsPage";
-import SingleOrderPage from "./pages/Dashboard/SingleOrderPage";
-import RunSheetPage from "./pages/Dashboard/RunSheetPage";
-import ProofHistoryPage from "./pages/Dashboard/ProofHistoryPage";
-import UploadProofPage from "./pages/Dashboard/UploadProofPage";
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          
-          {/* Dashboard Routes */}
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="orders" element={<OrdersPage />} />
-            <Route path="orders/:id" element={<SingleOrderPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route path="run-sheet" element={<RunSheetPage />} />
-            <Route path="proof-history" element={<ProofHistoryPage />} />
-            <Route path="upload" element={<UploadProofPage />} />
-          </Route>
-          
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/orders/:orderId" element={<OrderView />} />
+        <Route path="/run-sheet" element={<RunSheet />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/:storeName/:orderId" element={<ProofView />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;
