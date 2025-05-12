@@ -11,34 +11,37 @@ import SettingsPage from './pages/Dashboard/SettingsPage';
 import ProofView from './pages/ProofView';
 import NotFound from './pages/NotFound';
 import { Toaster } from '@/components/ui/toaster';
+import { ToastProvider } from '@/hooks/use-toast';
 
 // Wrapper component to extract params and pass to ProofView
 const ProofViewWrapper = () => {
-  const { storeName = "", orderId = "" } = useParams();
+  const { storeName = "", orderId = "" } = useParams<{storeName: string, orderId: string}>();
   return <ProofView storeName={storeName} orderId={orderId} />;
 };
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Dashboard Routes */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="orders" element={<OrdersPage />} />
-          <Route path="run-sheet" element={<RunSheetPage />} />
-          <Route path="proof-history" element={<ProofHistoryPage />} />
-          <Route path="upload" element={<UploadProofPage />} />
-          <Route path="account" element={<Account />} />
-          <Route path="settings" element={<SettingsPage />} />
-        </Route>
+    <ToastProvider>
+      <Router>
+        <Routes>
+          {/* Dashboard Routes */}
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="orders" element={<OrdersPage />} />
+            <Route path="run-sheet" element={<RunSheetPage />} />
+            <Route path="proof-history" element={<ProofHistoryPage />} />
+            <Route path="upload" element={<UploadProofPage />} />
+            <Route path="account" element={<Account />} />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
 
-        {/* Public Routes */}
-        <Route path="/:storeName/:orderId" element={<ProofViewWrapper />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Toaster />
-    </Router>
+          {/* Public Routes */}
+          <Route path="/:storeName/:orderId" element={<ProofViewWrapper />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster />
+      </Router>
+    </ToastProvider>
   );
 }
 

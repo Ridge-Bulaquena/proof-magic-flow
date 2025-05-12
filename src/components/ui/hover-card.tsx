@@ -1,27 +1,98 @@
-import * as React from "react"
-import * as HoverCardPrimitive from "@radix-ui/react-hover-card"
 
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-const HoverCard = HoverCardPrimitive.Root
+interface HoverCardProps {
+  children: React.ReactNode;
+}
 
-const HoverCardTrigger = HoverCardPrimitive.Trigger
+interface HoverCardTriggerProps {
+  children: React.ReactNode;
+  asChild?: boolean;
+}
 
-const HoverCardContent = React.forwardRef<
-  React.ElementRef<typeof HoverCardPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content>
->(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
-  <HoverCardPrimitive.Content
-    ref={ref}
-    align={align}
-    sideOffset={sideOffset}
-    className={cn(
-      "z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className
-    )}
-    {...props}
-  />
-))
-HoverCardContent.displayName = HoverCardPrimitive.Content.displayName
+interface HoverCardContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  align?: "start" | "center" | "end";
+  sideOffset?: number;
+}
 
-export { HoverCard, HoverCardTrigger, HoverCardContent }
+const HoverCardContext = React.createContext<{
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}>({
+  open: false,
+  setOpen: () => {},
+});
+
+export const HoverCard = ({ children }: HoverCardProps) => {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <HoverCardContext.Provider value={{ open, setOpen }}>
+      <div className="relative inline-block">{children}</div>
+    </HoverCardContext.Provider>
+  );
+};
+
+export const HoverCardTrigger = ({
+  children,
+  asChild,
+}: HoverCardTriggerProps) => {
+  const { setOpen } = React.useContext(HoverCardContext);
+
+  const handleMouseEnter = () => setOpen(true);
+  const handleMouseLeave = () => setOpen(false);
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children as React.ReactElement, {
+      onMouseEnter: handleMouseEnter,
+      onMouseLeave: handleMouseLeave,
+    });
+  }
+
+  return (
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="inline-block"
+    >
+      {children}
+    </div>
+  );
+};
+
+export const HoverCardContent = React.forwardRef<
+  HTMLDivElement,
+  HoverCardContentProps
+>(
+  (
+    { className, align = "center", sideOffset = 4, children, ...props },
+    ref
+  ) => {
+    const { open } = React.useContext(HoverCardContext);
+
+    if (!open) return null;
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "absolute z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none animate-in fade-in-0 zoom-in-95",
+          {
+            "left-0": align === "start",
+            "left-1/2 -translate-x-1/2": align === "center",
+            "right-0": align === "end",
+          },
+          className
+        )}
+        style={{
+          top: `calc(100% + ${sideOffset}px)`,
+        }}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+HoverCardContent.displayName = "HoverCardContent";

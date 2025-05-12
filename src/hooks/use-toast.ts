@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, createContext, useContext } from "react";
 
 // This implements the toast notification system
 export type Toast = {
@@ -12,9 +12,17 @@ export type Toast = {
 };
 
 const TOAST_LIMIT = 5;
-const TOAST_REMOVE_DELAY = 1000;
 
-export const useToast = () => {
+type ToasterType = {
+  toasts: Toast[];
+  toast: (props: Omit<Toast, "id">) => { id: string; dismiss: () => void };
+  dismiss: (toastId?: string) => void;
+};
+
+// Create a context with default values
+const ToastContext = createContext<ToasterType | null>(null);
+
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const toast = (props: Omit<Toast, "id">) => {
@@ -47,13 +55,32 @@ export const useToast = () => {
     }
   };
 
-  return {
-    toast,
-    dismiss,
-    toasts,
-  };
+  return (
+    <ToastContext.Provider value={{ toasts, toast, dismiss }}>
+      {children}
+    </ToastContext.Provider>
+  );
 };
 
-// Export a singleton instance of the toast function
-const { toast } = useToast();
-export { toast };
+export const useToast = () => {
+  const context = useContext(ToastContext);
+  if (context === null) {
+    // When not in context, provide a fallback implementation
+    return {
+      toast: () => ({ id: "", dismiss: () => {} }),
+      dismiss: () => {},
+      toasts: [],
+    };
+  }
+  return context;
+};
+
+// Singleton instance
+export const toast = (props: Omit<Toast, "id">) => {
+  const context = useContext(ToastContext);
+  if (context) {
+    return context.toast(props);
+  }
+  console.warn("Toast used outside of ToastProvider");
+  return { id: "", dismiss: () => {} };
+};
