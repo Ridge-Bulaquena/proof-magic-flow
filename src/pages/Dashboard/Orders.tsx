@@ -1,4 +1,6 @@
+
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Table,
@@ -7,9 +9,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Search, Filter, Download } from "lucide-react";
 
 type Order = {
@@ -21,6 +23,7 @@ type Order = {
 };
 
 const Orders = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -33,7 +36,27 @@ const Orders = () => {
       status: 'pending',
       total: 99.99,
     },
-    // Add more mock orders as needed
+    {
+      id: 'ORD-002',
+      customerName: 'Jane Smith',
+      date: '2024-03-21',
+      status: 'processing',
+      total: 149.99,
+    },
+    {
+      id: 'ORD-003',
+      customerName: 'Bob Johnson',
+      date: '2024-03-19',
+      status: 'completed',
+      total: 79.50,
+    },
+    {
+      id: 'ORD-004',
+      customerName: 'Alice Brown',
+      date: '2024-03-18',
+      status: 'cancelled',
+      total: 129.75,
+    },
   ];
 
   return (
@@ -92,7 +115,13 @@ const Orders = () => {
                 </TableCell>
                 <TableCell>${order.total.toFixed(2)}</TableCell>
                 <TableCell>
-                  <Button variant="outline" size="sm">View</Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => navigate(`/dashboard/orders/${order.id}`)}
+                  >
+                    View
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -103,4 +132,4 @@ const Orders = () => {
   );
 };
 
-export default Orders; 
+export default Orders;

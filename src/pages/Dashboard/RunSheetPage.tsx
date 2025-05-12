@@ -1,13 +1,11 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, Printer, Download } from "lucide-react";
-import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 
 // Mock data for the run sheet
 const mockRunSheetData = Array(10).fill(null).map((_, i) => ({
@@ -19,6 +17,14 @@ const mockRunSheetData = Array(10).fill(null).map((_, i) => ({
   status: i % 4 === 0 ? "Ready" : i % 4 === 1 ? "In Progress" : i % 4 === 2 ? "On Hold" : "Completed",
   artist: `Artist ${(i % 3) + 1}`
 }));
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
 
 const RunSheetPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -48,14 +54,14 @@ const RunSheetPage = () => {
             <PopoverTrigger asChild>
               <Button variant="outline" className="min-w-[240px] justify-start">
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {selectedDate ? format(selectedDate, "PPP") : "Select date"}
+                {selectedDate ? formatDate(selectedDate) : "Select date"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
               <Calendar
                 mode="single"
                 selected={selectedDate}
-                onSelect={setSelectedDate}
+                onSelect={(date) => setSelectedDate(date)}
                 initialFocus
               />
             </PopoverContent>
@@ -71,7 +77,7 @@ const RunSheetPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Run Sheet: {selectedDate ? format(selectedDate, "MMMM d, yyyy") : "Today"}</CardTitle>
+          <CardTitle>Run Sheet: {selectedDate ? formatDate(selectedDate) : "Today"}</CardTitle>
           <CardDescription>
             {filteredItems.length} items scheduled for production
           </CardDescription>
@@ -97,7 +103,7 @@ const RunSheetPage = () => {
                     <TableCell>{item.customer}</TableCell>
                     <TableCell>{item.product}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{format(item.dueDate, "MMM d, yyyy")}</TableCell>
+                    <TableCell>{formatDate(item.dueDate)}</TableCell>
                     <TableCell>
                       <div className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
                         ${item.status === 'Ready' ? 'bg-blue-100 text-blue-800' : 

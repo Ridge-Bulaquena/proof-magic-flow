@@ -1,9 +1,9 @@
 
-import * as React from "react";
-import { useToast as useToastPrimitive } from "@/components/ui/toast";
+// This is a wrapper around the toast component
+import { toast as toastFunction } from "@/components/ui/toaster";
 
-export const useToast = useToastPrimitive;
+export const toast = toastFunction;
 
-export const toast = (props: Parameters<typeof useToast.toast>[0]) => {
-  return useToast.toast(props);
+export const useToast = () => {
+  return { toast: toastFunction };
 };

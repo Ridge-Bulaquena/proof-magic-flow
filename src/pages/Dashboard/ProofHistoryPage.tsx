@@ -1,16 +1,13 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CalendarIcon, Download, Eye, History } from "lucide-react";
-import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { DateRange } from "react-day-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 
 // Mock data for the proof history
 const mockProofHistory = Array(20).fill(null).map((_, i) => ({
@@ -24,10 +21,18 @@ const mockProofHistory = Array(20).fill(null).map((_, i) => ({
   artist: `Artist ${(i % 3) + 1}`
 }));
 
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
+
 const ProofHistoryPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+  const [dateRange, setDateRange] = useState<{from?: Date; to?: Date}>({
     from: undefined,
     to: undefined,
   });
@@ -91,10 +96,10 @@ const ProofHistoryPage = () => {
               {dateRange?.from ? (
                 dateRange.to ? (
                   <>
-                    {format(dateRange.from, "LLL dd, y")} - {format(dateRange.to, "LLL dd, y")}
+                    {formatDate(dateRange.from)} - {formatDate(dateRange.to)}
                   </>
                 ) : (
-                  format(dateRange.from, "LLL dd, y")
+                  formatDate(dateRange.from)
                 )
               ) : (
                 <span>Date range</span>
@@ -103,13 +108,10 @@ const ProofHistoryPage = () => {
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
-              initialFocus
               mode="range"
-              defaultMonth={dateRange?.from}
               selected={dateRange}
               onSelect={setDateRange}
               numberOfMonths={2}
-              className="pointer-events-auto"
             />
           </PopoverContent>
         </Popover>
@@ -150,7 +152,7 @@ const ProofHistoryPage = () => {
                     <TableCell className="font-medium">{proof.id}</TableCell>
                     <TableCell>{proof.orderId}</TableCell>
                     <TableCell>{proof.customer}</TableCell>
-                    <TableCell>{format(proof.sentDate, "MMM d, yyyy")}</TableCell>
+                    <TableCell>{formatDate(proof.sentDate)}</TableCell>
                     <TableCell>
                       <div className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
                         ${proof.status === 'Awaiting Review' ? 'bg-amber-100 text-amber-800' : 

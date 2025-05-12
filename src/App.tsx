@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard/Dashboard';
-import Orders from './pages/Dashboard/Orders';
+import OrdersPage from './pages/Dashboard/OrdersPage';
 import RunSheetPage from './pages/Dashboard/RunSheetPage';
 import ProofHistoryPage from './pages/Dashboard/ProofHistoryPage';
 import UploadProofPage from './pages/Dashboard/UploadProofPage';
@@ -25,7 +25,7 @@ function App() {
         {/* Dashboard Routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
-          <Route path="orders" element={<Orders />} />
+          <Route path="orders" element={<OrdersPage />} />
           <Route path="run-sheet" element={<RunSheetPage />} />
           <Route path="proof-history" element={<ProofHistoryPage />} />
           <Route path="upload" element={<UploadProofPage />} />
