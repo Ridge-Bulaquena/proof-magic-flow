@@ -1,14 +1,16 @@
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import DashboardLayout from './components/layouts/DashboardLayout';
+import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Orders from './pages/Dashboard/Orders';
-import RunSheet from './pages/Dashboard/RunSheet';
-import ProofHistory from './pages/Dashboard/ProofHistory';
-import UploadProof from './pages/Dashboard/UploadProof';
+import RunSheetPage from './pages/Dashboard/RunSheetPage';
+import ProofHistoryPage from './pages/Dashboard/ProofHistoryPage';
+import UploadProofPage from './pages/Dashboard/UploadProofPage';
 import Account from './pages/Dashboard/Account';
-import Settings from './pages/Dashboard/Settings';
+import SettingsPage from './pages/Dashboard/SettingsPage';
 import ProofView from './pages/ProofView';
 import NotFound from './pages/NotFound';
+import { Toaster } from '@/components/ui/toaster';
 
 function App() {
   return (
@@ -18,17 +20,18 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="orders" element={<Orders />} />
-          <Route path="run-sheet" element={<RunSheet />} />
-          <Route path="proof-history" element={<ProofHistory />} />
-          <Route path="upload" element={<UploadProof />} />
+          <Route path="run-sheet" element={<RunSheetPage />} />
+          <Route path="proof-history" element={<ProofHistoryPage />} />
+          <Route path="upload" element={<UploadProofPage />} />
           <Route path="account" element={<Account />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
 
         {/* Public Routes */}
         <Route path="/:storeName/:orderId" element={<ProofView />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Toaster />
     </Router>
   );
 }
