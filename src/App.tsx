@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Orders from './pages/Dashboard/Orders';
@@ -11,6 +11,12 @@ import SettingsPage from './pages/Dashboard/SettingsPage';
 import ProofView from './pages/ProofView';
 import NotFound from './pages/NotFound';
 import { Toaster } from '@/components/ui/toaster';
+
+// Wrapper component to extract params and pass to ProofView
+const ProofViewWrapper = () => {
+  const { storeName = "", orderId = "" } = useParams();
+  return <ProofView storeName={storeName} orderId={orderId} />;
+};
 
 function App() {
   return (
@@ -28,7 +34,7 @@ function App() {
         </Route>
 
         {/* Public Routes */}
-        <Route path="/:storeName/:orderId" element={<ProofView />} />
+        <Route path="/:storeName/:orderId" element={<ProofViewWrapper />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
