@@ -25,6 +25,7 @@ function App() {
       <Router>
         <Routes>
           {/* Dashboard Routes */}
+          <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="orders" element={<OrdersPage />} />
