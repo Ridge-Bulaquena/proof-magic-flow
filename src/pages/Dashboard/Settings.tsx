@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -183,7 +182,7 @@ const SettingsPage = () => {
                   value={emailSettings.emailProvider} 
                   onValueChange={(value) => handleEmailSettingsChange("emailProvider", value)}
                 >
-                  <SelectTrigger id="emailProvider">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select provider" />
                   </SelectTrigger>
                   <SelectContent>
@@ -301,7 +300,7 @@ const SettingsPage = () => {
                   value={brandingSettings.logoPosition} 
                   onValueChange={(value) => handleBrandingSettingsChange("logoPosition", value)}
                 >
-                  <SelectTrigger id="logoPosition">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select position" />
                   </SelectTrigger>
                   <SelectContent>
