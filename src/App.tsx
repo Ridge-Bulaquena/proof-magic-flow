@@ -1,6 +1,6 @@
 
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
-import DashboardLayout from './layouts/DashboardLayout';
+import DashboardLayout from './components/layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import OrdersPage from './pages/Dashboard/OrdersPage';
 import RunSheetPage from './pages/Dashboard/RunSheetPage';
