@@ -1,191 +1,201 @@
 
-import { useState } from "react";
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CalendarIcon, Download, Eye, History } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format } from "date-fns";
+import { CalendarIcon, Search, FileText } from "lucide-react";
 
-// Mock data for the proof history
-const mockProofHistory = Array(20).fill(null).map((_, i) => ({
-  id: `PROOF-${2000 + i}`,
-  orderId: `ORD-${1000 + i}`,
-  customer: `Customer ${i + 1}`,
-  product: i % 3 === 0 ? "Custom Patch" : i % 3 === 1 ? "Embroidery" : "Label Print",
-  sentDate: new Date(Date.now() - (i * 2 * 24 * 60 * 60 * 1000)), // Each proof sent 2 days apart
-  status: i % 4 === 0 ? "Awaiting Review" : i % 4 === 1 ? "Approved" : i % 4 === 2 ? "Rejected" : "Revision Requested",
-  versions: Math.floor(Math.random() * 3) + 1,
-  artist: `Artist ${(i % 3) + 1}`
-}));
+type ProofStatus = "approved" | "rejected" | "pending";
 
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  });
-};
+interface Proof {
+  id: string;
+  orderId: string;
+  customerName: string;
+  orderName: string;
+  date: Date;
+  status: ProofStatus;
+}
+
+// Sample data
+const sampleProofs: Proof[] = [
+  {
+    id: "1",
+    orderId: "ORD-001",
+    customerName: "Acme Corp",
+    orderName: "Business Cards",
+    date: new Date("2025-05-01"),
+    status: "approved",
+  },
+  {
+    id: "2",
+    orderId: "ORD-002",
+    customerName: "TechStart Inc",
+    orderName: "Flyers",
+    date: new Date("2025-05-05"),
+    status: "rejected",
+  },
+  {
+    id: "3",
+    orderId: "ORD-003",
+    customerName: "Local Cafe",
+    orderName: "Menu Cards",
+    date: new Date("2025-05-08"),
+    status: "pending",
+  },
+  {
+    id: "4",
+    orderId: "ORD-004",
+    customerName: "City Events",
+    orderName: "Posters",
+    date: new Date("2025-05-10"),
+    status: "approved",
+  },
+];
 
 const ProofHistoryPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [dateRange, setDateRange] = useState<{from?: Date; to?: Date}>({
-    from: undefined,
-    to: undefined,
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [date, setDate] = useState<{
+    from?: Date;
+    to?: Date;
+  }>({});
+
+  const filteredProofs = sampleProofs.filter(proof => {
+    // Filter by search query
+    const matchesSearch = 
+      proof.orderId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      proof.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      proof.orderName.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    // Filter by status
+    const matchesStatus = statusFilter === "" || proof.status === statusFilter;
+    
+    // Filter by date range
+    const matchesDate = 
+      (!date.from || proof.date >= date.from) &&
+      (!date.to || proof.date <= date.to);
+    
+    return matchesSearch && matchesStatus && matchesDate;
   });
-  
-  const filteredHistory = mockProofHistory.filter(proof => {
-    // Search filter
-    const searchMatch = 
-      searchTerm === "" || 
-      proof.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      proof.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      proof.id.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Status filter
-    const statusMatch = statusFilter === "all" || proof.status.replace(" ", "-").toLowerCase() === statusFilter;
-    
-    // Date range filter
-    const proofDate = new Date(proof.sentDate);
-    const dateMatch = 
-      (!dateRange?.from || proofDate >= dateRange.from) && 
-      (!dateRange?.to || proofDate <= dateRange.to);
-    
-    return searchMatch && statusMatch && dateMatch;
-  });
+
+  const getStatusBadge = (status: ProofStatus) => {
+    switch(status) {
+      case "approved":
+        return <Badge className="bg-green-500">Approved</Badge>;
+      case "rejected":
+        return <Badge className="bg-red-500">Rejected</Badge>;
+      case "pending":
+        return <Badge className="bg-yellow-500">Pending</Badge>;
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h3 className="text-2xl font-semibold">Proof History</h3>
-        <p className="text-sm text-muted-foreground">
-          Track all proofs sent to customers and their approval status
-        </p>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-4">
-        <div className="flex-1 min-w-[200px]">
-          <Input 
-            placeholder="Search by order ID, customer..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Status filter" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="awaiting-review">Awaiting Review</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
-            <SelectItem value="revision-requested">Revision Requested</SelectItem>
-          </SelectContent>
-        </Select>
-        
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="justify-start min-w-[240px]">
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {dateRange?.from ? (
-                dateRange.to ? (
-                  <>
-                    {formatDate(dateRange.from)} - {formatDate(dateRange.to)}
-                  </>
-                ) : (
-                  formatDate(dateRange.from)
-                )
-              ) : (
-                <span>Date range</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="range"
-              selected={dateRange}
-              onSelect={setDateRange}
-              numberOfMonths={2}
-            />
-          </PopoverContent>
-        </Popover>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Proof History</h1>
       </div>
       
-      {/* Proof history table */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-end">
+        <div className="flex-1">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input 
+              placeholder="Search by order ID, customer, or product..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+        
+        <div className="flex flex-col gap-2 w-full md:w-auto">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full md:w-[180px]">
+              <SelectValue placeholder="All Statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Statuses</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="flex flex-col gap-2 w-full md:w-auto">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-full md:w-[240px] justify-start text-left font-normal">
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(date.from, "LLL dd, y")
+                  )
+                ) : (
+                  "Date range"
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                selected={date as any}
+                onSelect={setDate as any}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle className="flex justify-between items-center">
-            <span>Proof Records</span>
-            <Button variant="outline" size="sm">
-              <Download className="mr-2 h-4 w-4" />
-              Export
-            </Button>
-          </CardTitle>
-          <CardDescription>
-            {filteredHistory.length} proofs found
-          </CardDescription>
+          <CardTitle>Proof Records</CardTitle>
+          <CardDescription>A list of all proof records and their statuses.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Proof ID</TableHead>
-                <TableHead>Order ID</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Sent Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Versions</TableHead>
-                <TableHead>Artist</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredHistory.length > 0 ? (
-                filteredHistory.map((proof) => (
-                  <TableRow key={proof.id}>
-                    <TableCell className="font-medium">{proof.id}</TableCell>
-                    <TableCell>{proof.orderId}</TableCell>
-                    <TableCell>{proof.customer}</TableCell>
-                    <TableCell>{formatDate(proof.sentDate)}</TableCell>
-                    <TableCell>
-                      <div className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
-                        ${proof.status === 'Awaiting Review' ? 'bg-amber-100 text-amber-800' : 
-                        proof.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                        proof.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                        'bg-blue-100 text-blue-800'}`}
-                      >
-                        {proof.status}
+          {filteredProofs.length > 0 ? (
+            <div className="space-y-4">
+              {filteredProofs.map(proof => (
+                <div key={proof.id} className="flex items-center justify-between border-b pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-gray-100 p-2">
+                      <FileText className="h-5 w-5 text-gray-500" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">{proof.orderName}</h3>
+                      <div className="flex gap-4 text-sm text-muted-foreground">
+                        <span>Order: {proof.orderId}</span>
+                        <span>Customer: {proof.customerName}</span>
                       </div>
-                    </TableCell>
-                    <TableCell>{proof.versions}</TableCell>
-                    <TableCell>{proof.artist}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" title="View Proof">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" title="View History">
-                          <History className="h-4 w-4" />
-                        </Button>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <div className="text-sm text-muted-foreground">
+                        {format(proof.date, "MMM dd, yyyy")}
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                    No proof records found matching your filters
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                      {getStatusBadge(proof.status)}
+                    </div>
+                    <Button variant="outline" size="sm">View</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-10 text-center text-muted-foreground">
+              No proof records found matching your filters
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
