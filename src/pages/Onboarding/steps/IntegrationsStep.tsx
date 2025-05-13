@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileBox, Upload, ExternalLink, Check, Grid } from "lucide-react";
+import { Package, Upload, ExternalLink, Check, Grid, FileBox } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
 
 type IntegrationItem = {
@@ -67,7 +67,7 @@ const IntegrationsStep = ({ storeData, updateStoreData }: IntegrationsStepProps)
     {
       id: 'orderdesk',
       name: 'OrderDesk',
-      icon: Grid,
+      icon: Package,
       description: 'Connect your OrderDesk account for order fulfillment',
       connected: false,
       popular: false

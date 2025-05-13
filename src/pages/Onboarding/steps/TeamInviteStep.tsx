@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { PlusCircle, UserPlus, Trash2, User, Users } from "lucide-react";
+import { PlusCircle, User, Users, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -150,7 +150,7 @@ const TeamInviteStep = ({ storeData, updateStoreData }: TeamInviteStepProps) => 
                 </Select>
               </div>
               <Button onClick={handleAddTeamMember}>
-                <UserPlus className="h-4 w-4 mr-2" />
+                <User className="h-4 w-4 mr-2" />
                 Invite
               </Button>
             </div>
