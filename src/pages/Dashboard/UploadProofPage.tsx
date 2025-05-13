@@ -1,66 +1,68 @@
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Upload, FileCheck, X, AlertCircle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Upload, X, Image, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-interface FileWithPreview extends File {
+interface UploadedFile {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
   preview?: string;
 }
 
 const UploadProofPage = () => {
   const { toast } = useToast();
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [orderId, setOrderId] = useState('');
-  const [customerName, setCustomerName] = useState('');
-  const [orderType, setOrderType] = useState('');
-  const [notes, setNotes] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    
-    if (e.dataTransfer.files) {
-      const newFiles = Array.from(e.dataTransfer.files);
-      handleFiles(newFiles as FileWithPreview[]);
-    }
-  };
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [orderId, setOrderId] = useState("");
+  const [message, setMessage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
-      handleFiles(newFiles as FileWithPreview[]);
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles: UploadedFile[] = Array.from(e.target.files).map(file => {
+        const id = Math.random().toString(36).substring(2, 9);
+        
+        // Create preview for images
+        let preview: string | undefined;
+        if (file.type.startsWith("image/")) {
+          preview = URL.createObjectURL(file);
+        }
+        
+        return {
+          id,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          preview
+        };
+      });
+      
+      setFiles([...files, ...newFiles]);
     }
   };
 
-  const handleFiles = (newFiles: FileWithPreview[]) => {
-    // Create previews for image files
-    const filesWithPreviews = newFiles.map(file => {
-      if (file.type.startsWith('image/')) {
-        file.preview = URL.createObjectURL(file);
-      }
-      return file;
-    });
+  const removeFile = (id: string) => {
+    const fileToRemove = files.find(file => file.id === id);
+    if (fileToRemove?.preview) {
+      URL.revokeObjectURL(fileToRemove.preview);
+    }
     
-    setFiles(prev => [...prev, ...filesWithPreviews]);
+    setFiles(files.filter(file => file.id !== id));
   };
 
-  const removeFile = (index: number) => {
-    setFiles(prev => {
-      const file = prev[index];
-      if (file.preview) {
-        URL.revokeObjectURL(file.preview);
-      }
-      const newFiles = [...prev];
-      newFiles.splice(index, 1);
-      return newFiles;
-    });
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,180 +71,191 @@ const UploadProofPage = () => {
     if (files.length === 0) {
       toast({
         title: "No files selected",
-        description: "Please upload at least one file.",
+        description: "Please select at least one proof file to upload.",
         variant: "destructive"
       });
       return;
     }
-
-    if (!orderId || !customerName || !orderType) {
-      toast({
-        title: "Missing information",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    if (!orderId) {
       toast({
-        title: "Proof uploaded successfully",
-        description: "The customer will be notified about the new proof.",
+        title: "Order ID required",
+        description: "Please enter an order ID for this proof.",
+        variant: "destructive"
       });
-      
-      // Reset form
-      setFiles([]);
-      setOrderId('');
-      setCustomerName('');
-      setOrderType('');
-      setNotes('');
-      setIsSubmitting(false);
-    }, 1500);
+      return;
+    }
+    
+    setIsUploading(true);
+    
+    // Simulate upload process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    toast({
+      title: "Proof uploaded successfully!",
+      description: `The proof for order ${orderId} has been uploaded and is ready to send.`,
+    });
+    
+    // Reset form
+    setIsUploading(false);
+    setFiles([]);
+    setOrderId("");
+    setMessage("");
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="max-w-3xl mx-auto">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold">Upload Proof</h1>
+        <p className="text-muted-foreground">
+          Upload and send proofs to your customers for approval
+        </p>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>New Proof Upload</CardTitle>
-          <CardDescription>
-            Upload a new proof file for customer approval
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="order-id">Order ID</Label>
-                  <Input 
-                    id="order-id" 
-                    placeholder="e.g., ORD-001" 
-                    value={orderId}
-                    onChange={(e) => setOrderId(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="customer-name">Customer Name</Label>
-                  <Input 
-                    id="customer-name" 
-                    placeholder="e.g., John Doe"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="order-type">Order Type</Label>
-                  <Select value={orderType} onValueChange={setOrderType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select order type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="business-cards">Business Cards</SelectItem>
-                      <SelectItem value="flyers">Flyers</SelectItem>
-                      <SelectItem value="brochures">Brochures</SelectItem>
-                      <SelectItem value="posters">Posters</SelectItem>
-                      <SelectItem value="patches">Custom Patches</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="notes">Notes</Label>
-                  <Textarea 
-                    id="notes" 
-                    placeholder="Any additional notes for the customer..." 
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Upload Proof Files</Label>
-                <div 
-                  className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50 transition-colors"
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={handleFileDrop}
-                  onClick={() => document.getElementById('file-upload')?.click()}
-                >
-                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                  <div className="mt-4">
-                    <p className="text-sm font-medium text-gray-900">
-                      Drag files here or click to upload
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Support for PDF, PNG, JPG, AI, PSD (max 50MB each)
+      
+      <form onSubmit={handleSubmit}>
+        <Card>
+          <CardHeader>
+            <CardTitle>Proof Details</CardTitle>
+            <CardDescription>
+              Enter the order details and upload your proof files
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="orderId">Order ID</Label>
+              <Input 
+                id="orderId" 
+                placeholder="Enter order ID or reference number"
+                value={orderId}
+                onChange={(e) => setOrderId(e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Customer</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select or search for customer" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="john-doe">John Doe</SelectItem>
+                  <SelectItem value="jane-smith">Jane Smith</SelectItem>
+                  <SelectItem value="acme-corp">Acme Corporation</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="proof-files">Upload Proof Files</Label>
+              <div className="border-2 border-dashed rounded-lg p-8 text-center hover:bg-gray-50 transition-colors">
+                <input
+                  type="file"
+                  id="proof-files"
+                  className="hidden"
+                  multiple
+                  accept="image/*, application/pdf"
+                  onChange={handleFileChange}
+                />
+                <label htmlFor="proof-files" className="cursor-pointer">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Upload className="h-8 w-8 text-gray-400" />
+                    <p className="font-medium">Click to upload or drag and drop</p>
+                    <p className="text-sm text-muted-foreground">
+                      PDF, PNG, JPG, or GIF (max 10MB)
                     </p>
                   </div>
-                  <Input 
-                    id="file-upload" 
-                    type="file" 
-                    className="hidden" 
-                    multiple 
-                    onChange={handleFileChange}
-                    accept=".pdf,.png,.jpg,.jpeg,.ai,.psd"
-                  />
-                </div>
+                </label>
               </div>
-
+              
               {files.length > 0 && (
-                <div className="space-y-2">
-                  <Label>Selected Files</Label>
-                  <div className="space-y-2">
-                    {files.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          {file.preview ? (
-                            <div className="h-10 w-10 rounded overflow-hidden">
-                              <img src={file.preview} alt="Preview" className="h-full w-full object-cover" />
-                            </div>
-                          ) : (
-                            <FileCheck className="h-10 w-10 text-gray-400" />
-                          )}
-                          <div>
-                            <p className="text-sm font-medium truncate" style={{ maxWidth: '200px' }}>
-                              {file.name}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {(file.size / (1024 * 1024)).toFixed(2)} MB
-                            </p>
+                <div className="mt-4 space-y-2">
+                  {files.map((file) => (
+                    <div 
+                      key={file.id} 
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-md"
+                    >
+                      <div className="flex items-center gap-3">
+                        {file.preview ? (
+                          <div className="h-10 w-10 rounded bg-gray-100 overflow-hidden">
+                            <img 
+                              src={file.preview} 
+                              alt={file.name}
+                              className="h-full w-full object-cover" 
+                            />
                           </div>
+                        ) : (
+                          <div className="h-10 w-10 flex items-center justify-center rounded bg-gray-100">
+                            <FileText className="h-6 w-6 text-gray-400" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium truncate max-w-[200px]">
+                            {file.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatFileSize(file.size)}
+                          </p>
                         </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFile(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
                       </div>
-                    ))}
-                  </div>
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => removeFile(file.id)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               )}
-
-              <div className="flex justify-end">
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Uploading..." : "Upload Proof"}
-                </Button>
-              </div>
             </div>
-          </form>
-        </CardContent>
-      </Card>
+            
+            <div className="space-y-2">
+              <Label htmlFor="message">Message for Customer</Label>
+              <Select
+                value={message}
+                onValueChange={setMessage}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a template or type custom message" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="template1">Please review and approve your design</SelectItem>
+                  <SelectItem value="template2">Your proof is ready for review</SelectItem>
+                  <SelectItem value="template3">Please check dimensions and spelling</SelectItem>
+                </SelectContent>
+              </Select>
+              <Textarea 
+                value={message === "template1" 
+                  ? "Please review and approve your design" 
+                  : message === "template2"
+                  ? "Your proof is ready for review"
+                  : message === "template3"
+                  ? "Please check dimensions and spelling"
+                  : ""}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Enter a message for your customer..."
+                className="h-32"
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-end space-x-2">
+            <Button 
+              type="button" 
+              variant="outline"
+            >
+              Save Draft
+            </Button>
+            <Button 
+              type="submit"
+              disabled={isUploading || files.length === 0 || !orderId}
+            >
+              {isUploading ? "Uploading..." : "Send Proof"}
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
     </div>
   );
 };
