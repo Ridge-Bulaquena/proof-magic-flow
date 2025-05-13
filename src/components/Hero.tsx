@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { Check, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   const [animateStartFree, setAnimateStartFree] = useState(false);
@@ -33,20 +34,24 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col md:flex-row gap-6 w-full max-w-lg">
-            <button 
-              className={`button ${animateStartFree ? 'animate' : ''}`}
-              onClick={handleStartFreeClick}
-              style={{ maxWidth: '350px', width: '100%', letterSpacing: '3px', fontSize: '18px' }}
-            >
-              START FREE
-            </button>
+            <Link to="/dashboard" className="w-full">
+              <button 
+                className={`button ${animateStartFree ? 'animate' : ''}`}
+                onClick={handleStartFreeClick}
+                style={{ maxWidth: '350px', width: '100%', letterSpacing: '3px', fontSize: '18px' }}
+              >
+                START FREE
+              </button>
+            </Link>
             
-            <button 
-              onClick={handleBookDemoClick}
-              className={`button-secondary ${animateBookDemo ? 'animate-elastic' : ''}`}
-            >
-              Book a Demo <ArrowRight size={16} className="ml-1 inline" />
-            </button>
+            <Link to="/dashboard" className="w-full md:w-auto">
+              <button 
+                onClick={handleBookDemoClick}
+                className={`button-secondary ${animateBookDemo ? 'animate-elastic' : ''}`}
+              >
+                Book a Demo <ArrowRight size={16} className="ml-1 inline" />
+              </button>
+            </Link>
           </div>
 
           <div className="flex flex-wrap justify-center gap-6 mt-8 mb-8 max-w-xl">

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Mail } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from 'react-router-dom';
 
 const CTA = () => {
   const [email, setEmail] = useState('');
@@ -55,8 +56,11 @@ const CTA = () => {
               type="submit" 
               className="h-12 px-6 bg-brand-teal hover:bg-brand-teal-dark rounded-full"
               disabled={isSubmitting}
+              asChild
             >
-              Get Started Free {!isSubmitting && <ArrowRight size={18} className="ml-2" />}
+              <Link to="/dashboard">
+                Get Started Free {!isSubmitting && <ArrowRight size={18} className="ml-2" />}
+              </Link>
             </Button>
           </form>
           

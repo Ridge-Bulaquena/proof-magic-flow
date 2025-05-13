@@ -31,11 +31,11 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex justify-between items-center">
-          <a href="/" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <span className="text-2xl font-bold text-brand-purple-dark">
               Simpler<span className="text-brand-teal">Proofs</span>
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -62,8 +62,9 @@ const Navbar = () => {
             <Button 
               size="sm" 
               className="font-medium bg-brand-purple hover:bg-brand-purple-dark text-white"
+              asChild
             >
-              Start Free
+              <Link to="/dashboard">Start Free</Link>
             </Button>
           </div>
 
@@ -125,8 +126,9 @@ const Navbar = () => {
               </Button>
               <Button 
                 className="w-full justify-center font-medium bg-brand-purple hover:bg-brand-purple-dark text-white"
+                asChild
               >
-                Start Free
+                <Link to="/dashboard">Start Free</Link>
               </Button>
             </div>
           </div>
