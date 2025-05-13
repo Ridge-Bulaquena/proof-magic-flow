@@ -8,7 +8,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { CalendarIcon, Search, FileText } from "lucide-react";
+import { CalendarIcon, Search, FileText, Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 
 type ProofStatus = "approved" | "rejected" | "pending";
 
@@ -151,6 +152,7 @@ const ProofHistoryPage = () => {
                 mode="range"
                 selected={date as any}
                 onSelect={setDate as any}
+                className="pointer-events-auto"
               />
             </PopoverContent>
           </Popover>
@@ -186,7 +188,12 @@ const ProofHistoryPage = () => {
                       </div>
                       {getStatusBadge(proof.status)}
                     </div>
-                    <Button variant="outline" size="sm">View</Button>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to={`/dashboard/orders/${proof.orderId}`}>
+                        <Eye className="mr-1 h-4 w-4" />
+                        View
+                      </Link>
+                    </Button>
                   </div>
                 </div>
               ))}

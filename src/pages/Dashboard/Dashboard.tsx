@@ -1,203 +1,151 @@
-import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
-import { motion } from "framer-motion";
-import { Search, Filter, Download, RefreshCw } from "lucide-react";
 
-type Order = {
-  id: string;
-  customerName: string;
-  artist: string;
-  product: string;
-  proofStatus: 'awaiting' | 'sent' | 'approved' | 'rejected';
-  fulfillmentStatus: 'pending' | 'processing' | 'completed';
-};
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowUpRight, ChevronUp, ChevronDown, Users, Package, LineChart, Clock } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-
-  // Mock data - replace with actual data fetching
-  const orders: Order[] = [
-    {
-      id: 'ORD-001',
-      customerName: 'John Doe',
-      artist: 'Jane Smith',
-      product: 'T-Shirt',
-      proofStatus: 'awaiting',
-      fulfillmentStatus: 'pending',
-    },
-    // Add more mock orders as needed
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return 'bg-green-100 text-green-800 hover:bg-green-200';
-      case 'rejected':
-        return 'bg-red-100 text-red-800 hover:bg-red-200';
-      case 'sent':
-        return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
-      case 'completed':
-        return 'bg-green-100 text-green-800 hover:bg-green-200';
-      case 'processing':
-        return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
-      default:
-        return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
-    }
-  };
-
   return (
-    <div className="container mx-auto p-6">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex justify-between items-center mb-6"
-      >
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <div className="flex gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search orders..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 pl-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px] transition-all duration-200 hover:border-blue-500">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Orders</SelectItem>
-              <SelectItem value="awaiting">Awaiting Proof</SelectItem>
-              <SelectItem value="sent">Sent</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </motion.div>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <Button asChild>
+          <Link to="/dashboard/upload">Upload New Proof</Link>
+        </Button>
+      </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 p-1 bg-gray-100 rounded-lg">
-          {['dashboard', 'orders', 'run-sheet', 'proof-history', 'settings'].map((tab) => (
-            <TabsTrigger
-              key={tab}
-              value={tab}
-              className="transition-all duration-200 data-[state=active]:bg-white data-[state=active]:shadow-sm"
-            >
-              {tab.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        <TabsContent value="dashboard" className="mt-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="rounded-md border shadow-sm hover:shadow-md transition-shadow duration-200"
-          >
-            <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-              <h2 className="font-semibold">Recent Orders</h2>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="hover:bg-gray-100 transition-colors">
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Refresh
-                </Button>
-                <Button variant="outline" size="sm" className="hover:bg-gray-100 transition-colors">
-                  <Download className="h-4 w-4 mr-2" />
-                  Export
-                </Button>
-              </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Pending Approvals
+            </CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12</div>
+            <p className="text-xs text-muted-foreground">
+              +2 since yesterday
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Orders This Month
+            </CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">45</div>
+            <div className="flex items-center space-x-1 text-xs text-green-500">
+              <ChevronUp className="h-3 w-3" />
+              <span>15% from last month</span>
             </div>
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-gray-50 transition-colors">
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Customer Name</TableHead>
-                  <TableHead>Artist</TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Proof Status</TableHead>
-                  <TableHead>Fulfillment Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map((order) => (
-                  <TableRow 
-                    key={order.id}
-                    className="hover:bg-gray-50 transition-colors cursor-pointer"
-                  >
-                    <TableCell className="font-medium">{order.id}</TableCell>
-                    <TableCell>{order.customerName}</TableCell>
-                    <TableCell>{order.artist}</TableCell>
-                    <TableCell>{order.product}</TableCell>
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs transition-colors ${getStatusColor(order.proofStatus)}`}>
-                        {order.proofStatus.charAt(0).toUpperCase() + order.proofStatus.slice(1)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs transition-colors ${getStatusColor(order.fulfillmentStatus)}`}>
-                        {order.fulfillmentStatus.charAt(0).toUpperCase() + order.fulfillmentStatus.slice(1)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all duration-200"
-                      >
-                        View
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </motion.div>
-        </TabsContent>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Active Customers
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">87</div>
+            <div className="flex items-center space-x-1 text-xs text-green-500">
+              <ChevronUp className="h-3 w-3" />
+              <span>5% from last month</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Approval Rate
+            </CardTitle>
+            <LineChart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">89%</div>
+            <div className="flex items-center space-x-1 text-xs text-red-500">
+              <ChevronDown className="h-3 w-3" />
+              <span>3% from last month</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-        <TabsContent value="orders">
-          {/* Orders tab content */}
-        </TabsContent>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Proofs</CardTitle>
+            <CardDescription>
+              Recent proofs awaiting approval
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                  <div className="flex items-center space-x-4">
+                    <div>
+                      <p className="text-sm font-medium">Order #{1000 + i}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Customer {i}
+                      </p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to={`/dashboard/orders/ORD-00${i}`}>
+                      <ArrowUpRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <Button variant="outline" className="mt-4 w-full" asChild>
+              <Link to="/dashboard/proof-history">View All Proofs</Link>
+            </Button>
+          </CardContent>
+        </Card>
 
-        <TabsContent value="run-sheet">
-          {/* Run Sheet tab content */}
-        </TabsContent>
-
-        <TabsContent value="proof-history">
-          {/* Proof History tab content */}
-        </TabsContent>
-
-        <TabsContent value="settings">
-          {/* Settings tab content */}
-        </TabsContent>
-      </Tabs>
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Orders</CardTitle>
+            <CardDescription>
+              Recent orders placed
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                  <div className="flex items-center space-x-4">
+                    <div>
+                      <p className="text-sm font-medium">Order #{2000 + i}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {["Business Cards", "Flyers", "Custom Patches"][i - 1]}
+                      </p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to={`/dashboard/orders/ORD-00${i}`}>
+                      <ArrowUpRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <Button variant="outline" className="mt-4 w-full" asChild>
+              <Link to="/dashboard/orders">View All Orders</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

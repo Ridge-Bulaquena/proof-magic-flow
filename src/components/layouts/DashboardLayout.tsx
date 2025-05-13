@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -11,8 +11,12 @@ import {
   User,
   Settings,
   Menu,
-  X
+  X,
+  Bell
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -26,6 +30,17 @@ const navigation = [
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  // Check if the current location path is a nested route
+  const currentPath = navigation.find(item => {
+    if (location.pathname === item.href) return true;
+    if (item.href !== '/dashboard' && location.pathname.startsWith(item.href)) return true;
+    return false;
+  });
+
+  // Page title based on current path
+  const pageTitle = currentPath ? currentPath.name : 'Dashboard';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -70,11 +85,35 @@ const DashboardLayout = () => {
               </NavLink>
             ))}
           </nav>
+          <div className="p-4 border-t">
+            <div className="flex items-center space-x-3">
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">John Doe</p>
+                <p className="text-xs text-gray-600">Administrator</p>
+              </div>
+            </div>
+          </div>
         </div>
       </motion.aside>
 
       {/* Main content */}
       <div className="lg:pl-64">
+        <header className="sticky top-0 z-10 bg-white border-b shadow-sm h-16 flex items-center px-6">
+          <div className="flex justify-between items-center w-full">
+            <h2 className="text-xl font-semibold">{pageTitle}</h2>
+            <div className="flex items-center space-x-4">
+              <Button variant="outline" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-blue-600">3</Badge>
+              </Button>
+              <Button size="sm" className="bg-blue-600">Upgrade Plan</Button>
+            </div>
+          </div>
+        </header>
         <main className="p-6">
           <Outlet />
         </main>

@@ -8,7 +8,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { CalendarIcon, Search, Package } from "lucide-react";
+import { CalendarIcon, Search, Package, PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 type OrderStatus = "in-production" | "ready" | "delivered" | "cancelled";
@@ -101,7 +101,10 @@ const OrdersPage = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Orders</h1>
-        <Button>New Order</Button>
+        <Button>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          New Order
+        </Button>
       </div>
       
       <div className="flex flex-col gap-4 md:flex-row md:items-end">
@@ -156,6 +159,7 @@ const OrdersPage = () => {
                 mode="range"
                 selected={date as any}
                 onSelect={setDate as any}
+                className="pointer-events-auto"
               />
             </PopoverContent>
           </Popover>
