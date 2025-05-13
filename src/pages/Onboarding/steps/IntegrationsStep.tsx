@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dropbox, Upload, ExternalLink, Check, Shopify, Grid } from "lucide-react";
+import { FileBox, Upload, ExternalLink, Check, Grid } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
 
 type IntegrationItem = {
@@ -27,7 +27,7 @@ const IntegrationsStep = ({ storeData, updateStoreData }: IntegrationsStepProps)
     {
       id: 'shopify',
       name: 'Shopify',
-      icon: Shopify,
+      icon: Grid,
       description: 'Sync orders and customer data from your Shopify store',
       connected: false,
       popular: true
@@ -51,7 +51,7 @@ const IntegrationsStep = ({ storeData, updateStoreData }: IntegrationsStepProps)
     {
       id: 'dropbox',
       name: 'Dropbox',
-      icon: Dropbox,
+      icon: FileBox,
       description: 'Store and manage your proof files in Dropbox',
       connected: false,
       popular: false
