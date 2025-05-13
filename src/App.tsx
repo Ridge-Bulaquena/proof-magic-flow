@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound';
 import { Toaster } from '@/components/ui/toaster';
 import { ToastProvider } from '@/hooks/use-toast';
 import Index from './pages/Index';
+import OnboardingWizard from './pages/Onboarding';
 
 // Wrapper component to extract params and pass to ProofView
 const ProofViewWrapper = () => {
@@ -27,6 +28,9 @@ function App() {
         <Routes>
           {/* Landing Page (Index) as Root Route */}
           <Route path="/" element={<Index />} />
+          
+          {/* Onboarding Route */}
+          <Route path="/onboarding" element={<OnboardingWizard />} />
           
           {/* Dashboard Routes */}
           <Route path="/dashboard" element={<DashboardLayout />}>
